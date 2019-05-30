@@ -122,7 +122,7 @@ func runSubcommandDelete(c *cli.Context) error {
 }
 
 func runSubcommandExport(c *cli.Context) error {
-	s, err := NewStore(c.String("database"))
+	s, err := NewStore(c.Parent().String("database"))
 	if err != nil {
 		return err
 	}

@@ -114,7 +114,7 @@ func (o *otp) uriFragments() (label string, parameters []string) {
 		fmt.Sprintf("algorithm=%s", o.algoString),
 	)
 	if o.issuer != "" {
-		parameters = append(parameters, fmt.Sprintf("issuer=%s", o.issuer))
+		parameters = append(parameters, fmt.Sprintf("issuer=%s", url.QueryEscape(o.issuer)))
 	}
 
 	return
