@@ -13,7 +13,7 @@ import (
 )
 
 // AppVer means the project's version
-const AppVer = "0.1.0"
+const AppVer = "0.1.1"
 
 func runApp(c *cli.Context) error {
 	s, err := NewStore(c.String("database"))
