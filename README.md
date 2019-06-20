@@ -2,8 +2,8 @@
 
 Golang OTP library and Google Authenticator CLI 
 
-[![GoDoc](https://godoc.org/github.com/major1201/gotp?status.svg)](https://godoc.org/github.com/major1201/dohproxy)
-[![Go Report Card](https://goreportcard.com/badge/github.com/major1201/gotp)](https://goreportcard.com/report/github.com/major1201/dohproxy)
+[![GoDoc](https://godoc.org/github.com/major1201/gotp?status.svg)](https://godoc.org/github.com/major1201/gotp)
+[![Go Report Card](https://goreportcard.com/badge/github.com/major1201/gotp)](https://goreportcard.com/report/github.com/major1201/gotp)
 
 ## Installation
 
