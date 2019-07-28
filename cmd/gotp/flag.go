@@ -6,10 +6,10 @@ import (
 
 func getApp() *cli.App {
 	app := cli.NewApp()
-	app.Name = "gotp"
+	app.Name = Name
 	app.HelpName = app.Name
-	app.Usage = "gotp"
-	app.Version = AppVer
+	app.Usage = app.Name
+	app.Version = Version
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
 			Name:  "help, h",

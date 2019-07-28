@@ -12,8 +12,11 @@ import (
 	"time"
 )
 
-// AppVer means the project's version
-const AppVer = "0.1.1"
+// Name inspects the project name
+var Name = "gotp"
+
+// Version inspects the project version
+var Version = "custom"
 
 func runApp(c *cli.Context) error {
 	s, err := NewStore(c.String("database"))
