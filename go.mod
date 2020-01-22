@@ -1,5 +1,7 @@
 module github.com/major1201/gotp
 
+go 1.13
+
 require (
 	github.com/major1201/goutils v0.3.0
 	github.com/stretchr/testify v1.2.1

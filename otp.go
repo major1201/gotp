@@ -143,12 +143,12 @@ func NewOtpFromURI(uri string) (Otp, error) {
 
 	values := u.Query()
 
-	secret := values.Get("secret")
+	secret := strings.ToUpper(values.Get("secret"))
 	if secret == "" {
 		return nil, errors.New("secret is empty")
 	}
 
-	if values.Get("issuer") != "" && issuer != "" {
+	if values.Get("issuer") != "" {
 		issuer = values.Get("issuer")
 	}
 
