@@ -2,11 +2,12 @@ package main
 
 import (
 	"encoding/binary"
+
 	"github.com/major1201/gotp"
 	bolt "go.etcd.io/bbolt"
 )
 
-const defaultBucket = "otp"
+var defaultBucket = []byte("otp")
 
 // Store defines the database store
 type Store struct {
@@ -20,16 +21,6 @@ func NewStore(d string) (*Store, error) {
 	if err := s.open(); err != nil {
 		return nil, err
 	}
-
-	// ensure bucket "otp" exists
-	if err := s.db.Update(func(tx *bolt.Tx) error {
-		_, err2 := tx.CreateBucketIfNotExists([]byte(defaultBucket))
-		return err2
-	}); err != nil {
-		s.Close()
-		return nil, err
-	}
-
 	return s, nil
 }
 
@@ -38,6 +29,28 @@ func (s *Store) open() error {
 	db, err := bolt.Open(s.filename, 0644, nil)
 	s.db = db
 	return err
+}
+
+func (s *Store) ensureBucket() (err error) {
+	// ensure bucket "otp" exists
+	if err = s.db.Update(func(tx *bolt.Tx) error {
+		_, err2 := tx.CreateBucketIfNotExists(defaultBucket)
+		return err2
+	}); err != nil {
+		s.Close()
+	}
+	return
+}
+
+func (s *Store) getBucket(tx *bolt.Tx) (b *bolt.Bucket, err error) {
+	b = tx.Bucket(defaultBucket)
+	if b == nil {
+		if err = s.ensureBucket(); err != nil {
+			return
+		}
+		b = tx.Bucket(defaultBucket)
+	}
+	return
 }
 
 // Close the opened database file
@@ -51,7 +64,10 @@ func (s *Store) Close() error {
 // Add an OTP object
 func (s *Store) Add(o gotp.Otp) error {
 	return s.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(defaultBucket))
+		b, err := s.getBucket(tx)
+		if err != nil {
+			return err
+		}
 		i, err := b.NextSequence()
 		if err != nil {
 			return err
@@ -63,7 +79,10 @@ func (s *Store) Add(o gotp.Otp) error {
 // Delete an OTP object with id
 func (s *Store) Delete(id uint64) error {
 	return s.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(defaultBucket))
+		b, err := s.getBucket(tx)
+		if err != nil {
+			return err
+		}
 		return b.Delete(gotp.Itob(id))
 	})
 }
@@ -72,7 +91,10 @@ func (s *Store) Delete(id uint64) error {
 func (s *Store) List() ([]gotp.Otp, error) {
 	var otps []gotp.Otp
 	err := s.db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(defaultBucket))
+		b, err := s.getBucket(tx)
+		if err != nil {
+			return err
+		}
 		return b.ForEach(func(k, v []byte) error {
 			id := binary.BigEndian.Uint64(k)
 			otp, err := gotp.NewOtpFromURI(string(v))
